@@ -1,0 +1,6 @@
+-- /test.jsx --
+== sorts both class and className in jsx ==
+<div class="p-4 flex" className="m-2 block">hello</div>
+
+[expect]
+<div class="flex p-4" className="m-2 block">hello</div>

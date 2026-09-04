@@ -1,0 +1,48 @@
+-- /test.html --
+== skips class inside HTML comment ==
+<!-- <div class="p-4 flex absolute">hello</div> -->
+
+[expect]
+<!-- <div class="p-4 flex absolute">hello</div> -->
+
+== sorts outside comment but not inside ==
+<!-- <div class="p-4 flex"> --> <div class="p-4 flex absolute">hello</div>
+
+[expect]
+<!-- <div class="p-4 flex"> --> <div class="absolute flex p-4">hello</div>
+
+== non-class attribute not sorted ==
+<div not-class="p-4 flex absolute">hello</div>
+
+[expect]
+<div not-class="p-4 flex absolute">hello</div>
+
+== skips class with mustache interpolation ==
+<div class="p-4 flex {{ someVar }}">hello</div>
+
+[expect]
+<div class="p-4 flex {{ someVar }}">hello</div>
+
+== ellipsis marker sorts to end ==
+<div class="... p-4 flex">hello</div>
+
+[expect]
+<div class="flex p-4 ...">hello</div>
+
+== ellipsis in middle sorts to end ==
+<div class="p-4 ... flex">hello</div>
+
+[expect]
+<div class="flex p-4 ...">hello</div>
+
+== unicode ellipsis sorts to end ==
+<div class="… p-4 flex">hello</div>
+
+[expect]
+<div class="flex p-4 …">hello</div>
+
+== arbitrary value selector sorts correctly ==
+<div class="p-4 [&>div]:flex absolute">hello</div>
+
+[expect]
+<div class="absolute [&>div]:flex p-4">hello</div>

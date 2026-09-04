@@ -1,0 +1,49 @@
+-- /test.tsx --
+~~ {"tailwindFunctions": ["tw", "sortMeFn", "sortMeTemplate"]} ~~
+== sorts listed function ==
+const a = sortMeFn("p-4 flex absolute");
+
+[expect]
+const a = sortMeFn("absolute flex p-4");
+
+== unlisted function not sorted ==
+const b = dontSortFn("p-4 flex absolute");
+
+[expect]
+const b = dontSortFn("p-4 flex absolute");
+
+== sorts tagged template ==
+const c = sortMeTemplate`p-4 flex absolute`;
+
+[expect]
+const c = sortMeTemplate`absolute flex p-4`;
+
+== unlisted tagged template not sorted ==
+const d = dontSortTemplate`p-4 flex absolute`;
+
+[expect]
+const d = dontSortTemplate`p-4 flex absolute`;
+
+== chained member call sorted ==
+const e = tw.foo("p-4 flex absolute");
+
+[expect]
+const e = tw.foo("absolute flex p-4");
+
+== chained member tagged template sorted ==
+const f = tw.foo.bar`p-4 flex absolute`;
+
+[expect]
+const f = tw.foo.bar`absolute flex p-4`;
+
+== non-tw chained not sorted ==
+const g = no.foo("p-4 flex absolute");
+
+[expect]
+const g = no.foo("p-4 flex absolute");
+
+== non-tw chained template not sorted ==
+const h = no.tw`p-4 flex absolute`;
+
+[expect]
+const h = no.tw`p-4 flex absolute`;

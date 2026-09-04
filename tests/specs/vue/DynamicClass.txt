@@ -1,0 +1,42 @@
+-- /App.vue --
+== sorts static class in vue ==
+<template><div class="p-4 flex absolute">hello</div></template>
+
+[expect]
+<template><div class="absolute flex p-4">hello</div></template>
+
+== sorts dynamic :class with single-quoted string ==
+<div :class="'p-4 flex absolute'"></div>
+
+[expect]
+<div :class="'absolute flex p-4'"></div>
+
+== sorts v-bind:class with single-quoted string ==
+<div v-bind:class="'p-4 flex absolute'"></div>
+
+[expect]
+<div v-bind:class="'absolute flex p-4'"></div>
+
+== sorts :class template literal ==
+<div :class="`p-4 flex absolute`"></div>
+
+[expect]
+<div :class="`absolute flex p-4`"></div>
+
+== skips vue comment ==
+<!-- <div :class="'p-4 flex absolute'"></div> -->
+
+[expect]
+<!-- <div :class="'p-4 flex absolute'"></div> -->
+
+== empty :class unchanged ==
+<div :class=""></div>
+
+[expect]
+<div :class=""></div>
+
+== already sorted :class ==
+<div :class="'absolute flex p-4'"></div>
+
+[expect]
+<div :class="'absolute flex p-4'"></div>

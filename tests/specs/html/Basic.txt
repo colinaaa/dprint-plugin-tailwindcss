@@ -1,0 +1,52 @@
+-- /test.html --
+== sorts tailwind classes in class attribute ==
+<div class="p-4 flex absolute">hello</div>
+
+[expect]
+<div class="absolute flex p-4">hello</div>
+
+== already sorted is unchanged ==
+<div class="absolute flex p-4">hello</div>
+
+[expect]
+<div class="absolute flex p-4">hello</div>
+
+== multiple elements ==
+<div class="p-4 flex">
+  <span class="text-red-500 block m-2"></span>
+</div>
+
+[expect]
+<div class="flex p-4">
+  <span class="m-2 block text-red-500"></span>
+</div>
+
+== single-quoted class ==
+<div class='p-4 flex absolute'>hello</div>
+
+[expect]
+<div class='absolute flex p-4'>hello</div>
+
+== empty class unchanged ==
+<div class="">hello</div>
+
+[expect]
+<div class="">hello</div>
+
+== variant prefixes sort by base utility ==
+<div class="hover:p-4 hover:flex sm:absolute">hello</div>
+
+[expect]
+<div class="sm:absolute hover:flex hover:p-4">hello</div>
+
+== unknown classes sort to beginning ==
+<div class="flex potato p-4">hello</div>
+
+[expect]
+<div class="potato flex p-4">hello</div>
+
+== negative values ==
+<div class="p-4 -m-2 flex">hello</div>
+
+[expect]
+<div class="-m-2 flex p-4">hello</div>

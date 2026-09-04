@@ -1,0 +1,6 @@
+-- /test.html --
+== collapses extra whitespace ==
+<div class="  flex   p-4  absolute  ">hello</div>
+
+[expect]
+<div class="absolute flex p-4">hello</div>

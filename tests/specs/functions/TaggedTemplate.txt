@@ -1,0 +1,35 @@
+-- /test.tsx --
+~~ {"tailwindFunctions": ["tw", "clsx", "cn"]} ~~
+== sorts tagged template literal ==
+const cls = tw`p-4 flex absolute`;
+
+[expect]
+const cls = tw`absolute flex p-4`;
+
+== sorts chained function call ==
+const cls = tw.div("p-4 flex absolute");
+
+[expect]
+const cls = tw.div("absolute flex p-4");
+
+== sorts chained tagged template ==
+const cls = tw.div`p-4 flex absolute`;
+
+[expect]
+const cls = tw.div`absolute flex p-4`;
+
+== unlisted function not sorted ==
+const cls = otherFn("p-4 flex absolute");
+
+[expect]
+const cls = otherFn("p-4 flex absolute");
+
+== multiple functions in one file ==
+const a = clsx("p-4 flex absolute");
+const b = cn("m-2 block");
+const c = tw`p-4 flex`;
+
+[expect]
+const a = clsx("absolute flex p-4");
+const b = cn("m-2 block");
+const c = tw`flex p-4`;

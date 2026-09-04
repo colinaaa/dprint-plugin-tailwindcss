@@ -1,0 +1,50 @@
+-- /App.vue --
+== multiple elements with class and :class ==
+<template>
+  <div class="p-4 flex">
+    <span :class="'m-2 block text-red-500'"></span>
+  </div>
+</template>
+
+[expect]
+<template>
+  <div class="flex p-4">
+    <span :class="'m-2 block text-red-500'"></span>
+  </div>
+</template>
+
+== static class with dedup in vue ==
+<div class="flex p-4 flex">hello</div>
+
+[expect]
+<div class="flex p-4">hello</div>
+
+== :class with whitespace in string ==
+<div :class="'  p-4   flex  absolute  '"></div>
+
+[expect]
+<div :class="'absolute flex p-4'"></div>
+
+== :class with dedup ==
+<div :class="'flex p-4 flex'"></div>
+
+[expect]
+<div :class="'flex p-4'"></div>
+
+== :class with variants ==
+<div :class="'hover:p-4 sm:flex dark:bg-red-500'"></div>
+
+[expect]
+<div :class="'sm:flex dark:bg-red-500 hover:p-4'"></div>
+
+== :class with negative values ==
+<div :class="'-m-2 p-4 flex'"></div>
+
+[expect]
+<div :class="'-m-2 flex p-4'"></div>
+
+== :class single class ==
+<div :class="'flex'"></div>
+
+[expect]
+<div :class="'flex'"></div>

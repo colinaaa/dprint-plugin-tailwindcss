@@ -1,0 +1,118 @@
+name: publish
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dsherret/rust-toolchain-file@v1
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24.x'
+          registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
+      - name: Validate release version
+        run: |
+          if [[ ! "$GITHUB_REF_NAME" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Expected a tag in the form X.Y.Z, got: $GITHUB_REF_NAME" >&2
+            exit 1
+          fi
+
+          version="$GITHUB_REF_NAME"
+          cargo_version="$(sed -n 's/^version = "\([^"]*\)"/\1/p' Cargo.toml | head -n 1)"
+          npm_version="$(node -p "require('./deployment/npm/package.json').version")"
+          npm_lock_version="$(node -p "require('./deployment/npm/package-lock.json').version")"
+          npm_lock_root_version="$(node -p "require('./deployment/npm/package-lock.json').packages[''].version")"
+
+          if [[ "$version" != "$cargo_version" || "$version" != "$npm_version" || "$version" != "$npm_lock_version" || "$version" != "$npm_lock_root_version" ]]; then
+            echo "Version mismatch: tag=$version cargo=$cargo_version npm=$npm_version npm-lock=$npm_lock_version npm-lock-root=$npm_lock_root_version" >&2
+            exit 1
+          fi
+      - name: Install wasm32 target
+        run: rustup target add wasm32-unknown-unknown
+      - name: Test release
+        run: cargo test --release --locked
+      - name: Build release
+        run: cargo build --target wasm32-unknown-unknown --features wasm --release --locked
+      - name: Setup and test npm deployment
+        run: |
+          cd deployment/npm
+          npm ci
+          node setup.js
+          npm test
+
+  npm:
+    needs: validate
+    runs-on: ubuntu-latest
+    environment: npm-release
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dsherret/rust-toolchain-file@v1
+      - name: Install wasm32 target
+        run: rustup target add wasm32-unknown-unknown
+      - name: Build release
+        run: cargo build --target wasm32-unknown-unknown --features wasm --release --locked
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24.x'
+          registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
+      - name: Setup and test npm deployment
+        run: |
+          cd deployment/npm
+          npm ci
+          node setup.js
+          npm test
+      - name: Publish npm package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          cd deployment/npm
+          npm publish --access public
+
+  github-release:
+    needs: validate
+    runs-on: ubuntu-latest
+    environment: github-release
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dsherret/rust-toolchain-file@v1
+      - name: Install wasm32 target
+        run: rustup target add wasm32-unknown-unknown
+      - name: Build release
+        run: cargo build --target wasm32-unknown-unknown --features wasm --release --locked
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Prepare release
+        run: |
+          version="$GITHUB_REF_NAME"
+          sed -i "s|dprint-plugin-tailwindcss/0.0.0|dprint-plugin-tailwindcss/$version|" deployment/schema.json
+          mv target/wasm32-unknown-unknown/release/dprint_plugin_tailwindcss.wasm target/wasm32-unknown-unknown/release/plugin.wasm
+          deno run -A ./scripts/generate_release_notes.ts "$version" > "$GITHUB_WORKSPACE-CHANGELOG.txt"
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64
+        with:
+          files: |
+            target/wasm32-unknown-unknown/release/plugin.wasm
+            deployment/schema.json
+          body_path: ${{ github.workspace }}-CHANGELOG.txt
+          draft: false
+          fail_on_unmatched_files: true

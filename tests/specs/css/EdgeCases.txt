@@ -1,0 +1,38 @@
+-- /styles.css --
+== skips @apply inside CSS comment ==
+/* @apply p-4 flex absolute; */
+
+[expect]
+/* @apply p-4 flex absolute; */
+
+== @not-apply not matched ==
+.btn {
+  color: red;
+}
+
+[expect]
+.btn {
+  color: red;
+}
+
+== multiple @apply directives ==
+.card {
+  @apply p-4 flex;
+  @apply text-red-500 block m-2;
+}
+
+[expect]
+.card {
+  @apply flex p-4;
+  @apply m-2 block text-red-500;
+}
+
+== @apply with deduplication ==
+.btn {
+  @apply flex p-4 flex m-2 p-4;
+}
+
+[expect]
+.btn {
+  @apply m-2 flex p-4;
+}

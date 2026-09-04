@@ -1,0 +1,12 @@
+-- /test.html --
+== removes duplicate classes ==
+<div class="flex p-4 flex m-2 p-4">hello</div>
+
+[expect]
+<div class="m-2 flex p-4">hello</div>
+
+== does not remove variant duplicates ==
+<div class="flex hover:flex p-4">hello</div>
+
+[expect]
+<div class="flex hover:flex p-4">hello</div>

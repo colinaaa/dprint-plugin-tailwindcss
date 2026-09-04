@@ -1,0 +1,19 @@
+-- /test.html --
+~~ {"tailwindAttributes": ["/data-.*/", "myClass"]} ~~
+== regex attribute matches multiple attrs ==
+<div data-class="p-4 flex absolute" data-classes="m-2 block" data-style="p-4 absolute">hello</div>
+
+[expect]
+<div data-class="absolute flex p-4" data-classes="m-2 block" data-style="absolute p-4">hello</div>
+
+== literal and regex attributes together ==
+<div myClass="p-4 flex" data-tw="m-2 block">hello</div>
+
+[expect]
+<div myClass="flex p-4" data-tw="m-2 block">hello</div>
+
+== regex attribute does not match non-matching ==
+<div other-attr="p-4 flex">hello</div>
+
+[expect]
+<div other-attr="p-4 flex">hello</div>

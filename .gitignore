@@ -1,0 +1,6 @@
+/target
+**/*.rs.bk
+sourcemap
+deployment/npm/plugin.wasm
+deployment/npm/node_modules
+.vscode

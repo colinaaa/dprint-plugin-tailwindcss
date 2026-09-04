@@ -1,0 +1,40 @@
+-- /styles.css --
+== @apply with many utilities ==
+.btn {
+  @apply shadow-lg rounded-lg bg-blue-500 text-white font-bold p-4 m-2 flex items-center;
+}
+
+[expect]
+.btn {
+  @apply m-2 flex items-center rounded-lg bg-blue-500 p-4 font-bold text-white shadow-lg;
+}
+
+== @apply single class unchanged ==
+.btn {
+  @apply flex;
+}
+
+[expect]
+.btn {
+  @apply flex;
+}
+
+== @apply with variants ==
+.btn {
+  @apply hover:bg-blue-700 sm:p-6 p-4 bg-blue-500;
+}
+
+[expect]
+.btn {
+  @apply bg-blue-500 hover:bg-blue-700 p-4 sm:p-6;
+}
+
+== @apply empty class list ==
+.btn {
+  color: red;
+}
+
+[expect]
+.btn {
+  color: red;
+}

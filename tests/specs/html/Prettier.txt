@@ -1,0 +1,54 @@
+-- /test.html --
+== unknown class duplicates preserved, known dups removed ==
+<div class="idonotexist flex p-4 idonotexist p-4 idonotexist">hello</div>
+
+[expect]
+<div class="idonotexist idonotexist idonotexist flex p-4">hello</div>
+
+== single class unchanged ==
+<div class="flex">hello</div>
+
+[expect]
+<div class="flex">hello</div>
+
+== only unknown classes ==
+<div class="potato zebra alpha">hello</div>
+
+[expect]
+<div class="potato zebra alpha">hello</div>
+
+== multiline class attribute ==
+<div class="p-4
+  flex
+  absolute">hello</div>
+
+[expect]
+<div class="absolute flex p-4">hello</div>
+
+== class on multiple elements preserves non-class attributes ==
+<div id="app" class="p-4 flex" data-x="y">
+  <span role="button" class="m-2 block"></span>
+</div>
+
+[expect]
+<div id="app" class="flex p-4" data-x="y">
+  <span role="button" class="m-2 block"></span>
+</div>
+
+== multiple variants on one class ==
+<div class="dark:hover:bg-red-500 sm:hover:flex hover:p-4">hello</div>
+
+[expect]
+<div class="sm:hover:flex dark:hover:bg-red-500 hover:p-4">hello</div>
+
+== important modifier ==
+<div class="!p-4 flex !m-2">hello</div>
+
+[expect]
+<div class="!m-2 flex !p-4">hello</div>
+
+== arbitrary value with equals and colons ==
+<div class="p-4 bg-[url('https://example.com')] flex">hello</div>
+
+[expect]
+<div class="flex bg-[url('https://example.com')] p-4">hello</div>

@@ -1,0 +1,42 @@
+-- /styles.css --
+== sorts @apply directive ==
+.btn {
+  @apply p-4 flex absolute;
+}
+
+[expect]
+.btn {
+  @apply absolute flex p-4;
+}
+
+== sorts @apply with !important ==
+.btn {
+  @apply p-4 flex absolute !important;
+}
+
+[expect]
+.btn {
+  @apply absolute flex p-4 !important;
+}
+
+== already sorted @apply unchanged ==
+.btn {
+  @apply absolute flex p-4;
+}
+
+[expect]
+.btn {
+  @apply absolute flex p-4;
+}
+
+== multiple @apply directives ==
+.card {
+  @apply p-4 flex;
+  @apply text-red-500 block m-2;
+}
+
+[expect]
+.card {
+  @apply flex p-4;
+  @apply m-2 block text-red-500;
+}

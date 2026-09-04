@@ -1,0 +1,20 @@
+-- /App.vue --
+== sorts class in vue template ==
+<template><div class="p-4 flex absolute">hello</div></template>
+
+[expect]
+<template><div class="absolute flex p-4">hello</div></template>
+
+== sorts multiple classes in vue ==
+<template>
+  <div class="p-4 flex">
+    <span class="text-red-500 block m-2"></span>
+  </div>
+</template>
+
+[expect]
+<template>
+  <div class="flex p-4">
+    <span class="m-2 block text-red-500"></span>
+  </div>
+</template>

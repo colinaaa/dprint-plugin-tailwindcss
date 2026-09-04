@@ -1,0 +1,10 @@
+-- /styles.scss --
+== sorts @apply in scss ==
+.card {
+  @apply p-4 flex;
+}
+
+[expect]
+.card {
+  @apply flex p-4;
+}

@@ -1,0 +1,20 @@
+-- /styles.less --
+== sorts @apply in less file ==
+.card {
+  @apply p-4 flex absolute;
+}
+
+[expect]
+.card {
+  @apply absolute flex p-4;
+}
+
+== @apply in less with !important ==
+.card {
+  @apply p-4 flex !important;
+}
+
+[expect]
+.card {
+  @apply flex p-4 !important;
+}

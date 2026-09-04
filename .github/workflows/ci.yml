@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    name: ${{ matrix.config.kind }} ${{ matrix.config.os }}
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      matrix:
+        config:
+          - os: ubuntu-latest
+            kind: test_release
+          - os: ubuntu-latest
+            kind: test_debug
+
+    env:
+      CARGO_INCREMENTAL: 0
+      RUST_BACKTRACE: full
+
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dsherret/rust-toolchain-file@v1
+      - name: Install wasm32 target
+        if: matrix.config.kind == 'test_release'
+        run: rustup target add wasm32-unknown-unknown
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          save-if: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Build debug
+        if: matrix.config.kind == 'test_debug'
+        run: cargo build
+      - name: Build release
+        if: matrix.config.kind == 'test_release'
+        run: cargo build --target wasm32-unknown-unknown --features wasm --release
+
+      - name: Test debug
+        if: matrix.config.kind == 'test_debug'
+        run: cargo test
+      - name: Test release
+        if: matrix.config.kind == 'test_release'
+        run: cargo test --release
+
+      - uses: actions/setup-node@v7
+        if: matrix.config.kind == 'test_release'
+        with:
+          node-version: '24.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Setup and test npm deployment
+        if: matrix.config.kind == 'test_release'
+        run: |
+          cd deployment/npm
+          npm ci
+          node setup.js
+          npm run test

@@ -1,0 +1,13 @@
+-- /test.html --
+~~ {"tailwindAttributes": ["myClass"]} ~~
+== sorts custom attribute ==
+<div myClass="p-4 flex absolute">hello</div>
+
+[expect]
+<div myClass="absolute flex p-4">hello</div>
+
+== still sorts built-in class ==
+<div class="p-4 flex" myClass="m-2 block">hello</div>
+
+[expect]
+<div class="flex p-4" myClass="m-2 block">hello</div>

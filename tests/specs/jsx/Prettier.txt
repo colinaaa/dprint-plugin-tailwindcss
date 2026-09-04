@@ -1,0 +1,56 @@
+-- /test.tsx --
+== ns:className not sorted ==
+<div ns:className="p-4 flex absolute" />
+
+[expect]
+<div ns:className="p-4 flex absolute" />
+
+== ns:class not sorted ==
+<div ns:class="p-4 flex absolute" />
+
+[expect]
+<div ns:class="p-4 flex absolute" />
+
+== multiline className ==
+<div className="p-4
+  flex
+  absolute" />
+
+[expect]
+<div className="absolute flex p-4" />
+
+== className with only whitespace unchanged ==
+<div className="   " />
+
+[expect]
+<div className="   " />
+
+== className with tab and newline whitespace ==
+<div className="	p-4	flex	absolute	" />
+
+[expect]
+<div className="absolute flex p-4" />
+
+== multiple JSX elements ==
+<div className="p-4 flex">
+  <span className="m-2 block" />
+  <span className="text-red-500 absolute" />
+</div>
+
+[expect]
+<div className="flex p-4">
+  <span className="m-2 block" />
+  <span className="absolute text-red-500" />
+</div>
+
+== className with arbitrary value bracket ==
+<div className="p-4 w-[calc(100%-2rem)] flex" />
+
+[expect]
+<div className="flex w-[calc(100%-2rem)] p-4" />
+
+== className with group and peer ==
+<div className="group peer p-4 flex" />
+
+[expect]
+<div className="group peer flex p-4" />

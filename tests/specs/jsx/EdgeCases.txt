@@ -1,0 +1,44 @@
+-- /test.tsx --
+== skips className inside JS line comment ==
+// <div className="p-4 flex absolute" />
+<div className="p-4 flex absolute" />
+
+[expect]
+// <div className="p-4 flex absolute" />
+<div className="absolute flex p-4" />
+
+== skips className inside block comment ==
+/* <div className="p-4 flex absolute" /> */
+
+[expect]
+/* <div className="p-4 flex absolute" /> */
+
+== sorts className with whitespace ==
+<div className="   p-4  flex  absolute   " />
+
+[expect]
+<div className="absolute flex p-4" />
+
+== sorts className with duplicates ==
+<div className="flex p-4 flex m-2 p-4" />
+
+[expect]
+<div className="m-2 flex p-4" />
+
+== className with variants ==
+<div className="hover:p-4 hover:flex sm:absolute dark:bg-red-500" />
+
+[expect]
+<div className="sm:absolute hover:flex dark:bg-red-500 hover:p-4" />
+
+== preserves className expression ==
+<div className={styles.foo} />
+
+[expect]
+<div className={styles.foo} />
+
+== sorts className with negative values ==
+<div className="p-4 -m-2 flex -translate-x-1" />
+
+[expect]
+<div className="-m-2 flex -translate-x-1 p-4" />

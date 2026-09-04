@@ -1,0 +1,18 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    "schedule:weekly"
+  ],
+  "automerge": true,
+  "packageRules": [
+    {
+      "groupName": "serde",
+      "matchPackageNames": ["/^serde/"]
+    },
+    {
+      "groupName": "dprint",
+      "matchPackageNames": ["/^dprint/", "/^@dprint/"]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "$id": "https://plugins.dprint.dev/colinaaa/dprint-plugin-tailwindcss/0.0.0/schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "locked": {
+      "type": "boolean",
+      "description": "Whether the configuration is not allowed to be overridden or extended."
+    },
+    "removeDuplicates": {
+      "type": "boolean",
+      "default": true,
+      "description": "Remove duplicate CSS classes."
+    },
+    "collapseWhitespace": {
+      "type": "boolean",
+      "default": true,
+      "description": "Collapse extra whitespace between classes to a single space."
+    },
+    "tailwindAttributes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Additional attribute names to sort. Supports regex patterns in /pattern/ syntax."
+    },
+    "tailwindFunctions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Function names whose string arguments should be sorted (e.g. clsx, cn, tw, cva)."
+    }
+  },
+  "additionalProperties": false
+}

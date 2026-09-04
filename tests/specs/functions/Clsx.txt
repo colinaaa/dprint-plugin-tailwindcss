@@ -1,0 +1,13 @@
+-- /test.tsx --
+~~ {"tailwindFunctions": ["clsx"]} ~~
+== sorts function string arg ==
+const cls = clsx("p-4 flex absolute");
+
+[expect]
+const cls = clsx("absolute flex p-4");
+
+== function already sorted ==
+const cls = clsx("absolute flex p-4");
+
+[expect]
+const cls = clsx("absolute flex p-4");

@@ -1,0 +1,6 @@
+-- /page.astro --
+== sorts class in astro ==
+<div class="p-4 flex absolute">hello</div>
+
+[expect]
+<div class="absolute flex p-4">hello</div>

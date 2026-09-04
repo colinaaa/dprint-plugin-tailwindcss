@@ -1,0 +1,22 @@
+{
+  "name": "dprint-plugin-tailwindcss",
+  "version": "0.1.0",
+  "description": "Wasm module for dprint-plugin-tailwindcss. Sorts Tailwind CSS classes.",
+  "license": "MIT",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/colinaaa/dprint-plugin-tailwindcss.git"
+  },
+  "bugs": {
+    "url": "https://github.com/colinaaa/dprint-plugin-tailwindcss/issues"
+  },
+  "homepage": "https://github.com/colinaaa/dprint-plugin-tailwindcss#readme",
+  "scripts": {
+    "test": "node index.test.js"
+  },
+  "devDependencies": {
+    "@dprint/formatter": "~0.5.1"
+  }
+}

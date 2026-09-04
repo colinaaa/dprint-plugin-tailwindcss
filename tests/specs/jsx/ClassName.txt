@@ -1,0 +1,12 @@
+-- /test.tsx --
+== sorts className in tsx ==
+<div className="p-4 flex absolute">hello</div>
+
+[expect]
+<div className="absolute flex p-4">hello</div>
+
+== skips expression className ==
+<div className={styles.foo}>hello</div>
+
+[expect]
+<div className={styles.foo}>hello</div>
