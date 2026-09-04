@@ -159,7 +159,7 @@ fn build_func_regexes(func: &str) -> Vec<Regex> {
     };
 
     // Prefix ensures func is not preceded by `.` (which would mean it's a member, not the root)
-    let start = r#"(?:^|[\s;,=(])"#;
+    let start = r#"(?:^|[\s;,=({\[\]:?!<>+&|])"#;
     let chain = r#"(?:\.[a-zA-Z_$][a-zA-Z0-9_$]*)*"#;
 
     let mut result = Vec::new();
@@ -803,5 +803,94 @@ mod tests {
         let input = r#"const cls = otherFn("p-4 flex absolute");"#;
         let result = format_text(Path::new("test.tsx"), input, &config).unwrap();
         assert_eq!(result, None);
+    }
+
+    // === tailwindFunctions in JSX expression contexts ===
+
+    #[test]
+    fn sorts_function_in_jsx_curly_braces() {
+        let config = Configuration {
+            tailwind_functions: vec!["cn".to_string()],
+            ..default_config()
+        };
+        let input = r#"<div className={cn("p-4 flex absolute")}>"#;
+        let result = format_text(Path::new("test.tsx"), input, &config).unwrap();
+        assert_eq!(
+            result,
+            Some(r#"<div className={cn("absolute flex p-4")}>"#.to_string())
+        );
+    }
+
+    #[test]
+    fn sorts_function_in_jsx_curly_braces_single_quote() {
+        let config = Configuration {
+            tailwind_functions: vec!["cn".to_string()],
+            ..default_config()
+        };
+        let input = "<div className={cn('p-4 flex absolute')}>";
+        let result = format_text(Path::new("test.tsx"), input, &config).unwrap();
+        assert_eq!(
+            result,
+            Some("<div className={cn('absolute flex p-4')}>".to_string())
+        );
+    }
+
+    #[test]
+    fn sorts_function_in_array_context() {
+        let config = Configuration {
+            tailwind_functions: vec!["cn".to_string()],
+            ..default_config()
+        };
+        let input = r#"const cls = [cn("p-4 flex absolute")];"#;
+        let result = format_text(Path::new("test.tsx"), input, &config).unwrap();
+        assert_eq!(
+            result,
+            Some(r#"const cls = [cn("absolute flex p-4")];"#.to_string())
+        );
+    }
+
+    #[test]
+    fn sorts_function_in_ternary_context() {
+        let config = Configuration {
+            tailwind_functions: vec!["cn".to_string()],
+            ..default_config()
+        };
+        let input = r#"const cls = isActive ? cn("p-4 flex absolute") : "";"#;
+        let result = format_text(Path::new("test.tsx"), input, &config).unwrap();
+        assert_eq!(
+            result,
+            Some(r#"const cls = isActive ? cn("absolute flex p-4") : "";"#.to_string())
+        );
+    }
+
+    #[test]
+    fn sorts_function_after_logical_operator() {
+        let config = Configuration {
+            tailwind_functions: vec!["cn".to_string()],
+            ..default_config()
+        };
+        let input = r#"const cls = isActive && cn("p-4 flex absolute");"#;
+        let result = format_text(Path::new("test.tsx"), input, &config).unwrap();
+        assert_eq!(
+            result,
+            Some(r#"const cls = isActive && cn("absolute flex p-4");"#.to_string())
+        );
+    }
+
+    #[test]
+    fn sorts_function_in_jsx_return() {
+        let config = Configuration {
+            tailwind_functions: vec!["cn".to_string(), "clsx".to_string()],
+            ..default_config()
+        };
+        let input = r#"<p className={cn("px-4 flex items-center mt-2 bg-white text-sm font-medium")}>"#;
+        let result = format_text(Path::new("test.tsx"), input, &config).unwrap();
+        assert_eq!(
+            result,
+            Some(
+                r#"<p className={cn("mt-2 flex items-center bg-white px-4 font-medium text-sm")}>"#
+                    .to_string()
+            )
+        );
     }
 }
