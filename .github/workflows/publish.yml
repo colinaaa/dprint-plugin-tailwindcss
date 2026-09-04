@@ -53,6 +53,23 @@ jobs:
           node setup.js
           npm test
 
+  crates-io:
+    needs: validate
+    runs-on: ubuntu-latest
+    environment: crates-io-release
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dsherret/rust-toolchain-file@v1
+      - uses: rust-lang/crates-io-auth-action@v1
+        id: auth
+      - name: Publish to crates.io
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.token }}
+        run: cargo publish --locked
+
   npm:
     needs: validate
     runs-on: ubuntu-latest
