@@ -20,7 +20,7 @@ jobs:
       - uses: dsherret/rust-toolchain-file@v1
       - uses: actions/setup-node@v7
         with:
-          node-version: '24.x'
+          node-version: '26.x'
           registry-url: 'https://registry.npmjs.org'
           package-manager-cache: false
       - name: Validate release version
@@ -86,7 +86,7 @@ jobs:
         run: cargo build --target wasm32-unknown-unknown --features wasm --release --locked
       - uses: actions/setup-node@v7
         with:
-          node-version: '24.x'
+          node-version: '26.x'
           registry-url: 'https://registry.npmjs.org'
           package-manager-cache: false
       - name: Setup and test npm deployment
