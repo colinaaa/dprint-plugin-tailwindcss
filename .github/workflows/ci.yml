@@ -50,7 +50,7 @@ jobs:
       - uses: actions/setup-node@v7
         if: matrix.config.kind == 'test_release'
         with:
-          node-version: '24.x'
+          node-version: '26.x'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Setup and test npm deployment
